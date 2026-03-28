@@ -1,36 +1,5 @@
 
-import type { ServiceRequest, ServiceCommission, Annotation, ServiceType, CommissionStatus } from '@/types';
-
-export const mockServiceRequests: ServiceRequest[] = [
-  {
-    id: 'SR001',
-    data: new Date(2023, 9, 1).toISOString(),
-    cliente: 'Alice Silva',
-    equipamento: 'Torneira da Cozinha',
-    descricao: 'Torneira vazando na cozinha',
-    status: 'Orçamento',
-    numeroOS: 'OS-2023-001',
-  },
-  {
-    id: 'SR002',
-    data: new Date(2023, 9, 5).toISOString(),
-    cliente: 'Roberto Construtor',
-    equipamento: 'Ventilador de Teto',
-    descricao: 'Instalar novo ventilador de teto na sala de estar.',
-    status: 'Andamento',
-    observacao: 'Cliente solicitou urgência.',
-    numeroOS: 'OS-2023-002',
-  },
-  {
-    id: 'SR003',
-    data: new Date(2023, 8, 15).toISOString(),
-    cliente: 'Carlos Neves',
-    equipamento: 'Ar Condicionado Central',
-    descricao: 'Revisão anual do ar condicionado e limpeza de filtros.',
-    status: 'Pronto',
-    numeroOS: 'OS-2023-003',
-  },
-];
+import type { ServiceCommission, Annotation, ServiceType, CommissionStatus } from '@/types';
 
 export const mockServiceCommissions: ServiceCommission[] = [
   {
@@ -73,16 +42,16 @@ export const mockServiceCommissions: ServiceCommission[] = [
 export const mockAnnotations: Annotation[] = [
   {
     id: 'AN001',
-    serviceId: 'SR001',
-    relatedTo: 'service',
+    serviceId: 'SC001',
+    relatedTo: 'commission',
     text: 'Cliente mencionou que o vazamento começou há 2 dias. Prefere agendamento pela manhã.',
     date: new Date(2023, 9, 1, 10, 30).toISOString(),
     author: 'Equipe de Suporte',
   },
   {
     id: 'AN002',
-    serviceId: 'SR002',
-    relatedTo: 'service',
+    serviceId: 'SC002',
+    relatedTo: 'commission',
     text: 'Técnico precisa de uma escada alta para este trabalho. Confirmar altura do pé direito.',
     date: new Date(2023, 9, 5, 14, 0).toISOString(),
     author: 'Equipe de Despacho',

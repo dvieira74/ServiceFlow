@@ -43,7 +43,6 @@ export function PdfExportButton({
     const primaryColorRGB = [100, 181, 246]; // #64B5F6
     let yPos = 20;
 
-    // Remove acentos e espaços para o nome do arquivo
     const sanitizedLabel = selectedMonthLabel 
       ? selectedMonthLabel.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "_")
       : (dataLabel || 'servico').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -65,7 +64,6 @@ export function PdfExportButton({
       const tonerComms = commissions.filter(c => c.serviceType === 'toner');
       const notebookComms = commissions.filter(c => c.serviceType === 'notebook');
 
-      // Seção de Impressoras
       if (printerComms.length > 0) {
         doc.setFontSize(16);
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
@@ -84,7 +82,7 @@ export function PdfExportButton({
             c.commissionAmount.toFixed(2)
           ]),
           theme: 'striped',
-          headStyles: { fillColor: primaryColorRGB, textColor: [255, 255, 255] },
+          headStyles: { fillColor: primaryColorRGB as any, textColor: [255, 255, 255] },
           margin: { left: pageMargin, right: pageMargin },
         });
         yPos = (doc as any).lastAutoTable.finalY + 8;
@@ -97,7 +95,6 @@ export function PdfExportButton({
         yPos += 15;
       }
 
-      // Seção de Toner
       if (tonerComms.length > 0) {
         doc.setFontSize(16);
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
@@ -116,7 +113,7 @@ export function PdfExportButton({
             c.commissionAmount.toFixed(2)
           ]),
           theme: 'striped',
-          headStyles: { fillColor: primaryColorRGB, textColor: [255, 255, 255] },
+          headStyles: { fillColor: primaryColorRGB as any, textColor: [255, 255, 255] },
           margin: { left: pageMargin, right: pageMargin },
         });
         yPos = (doc as any).lastAutoTable.finalY + 8;
@@ -129,7 +126,6 @@ export function PdfExportButton({
         yPos += 15;
       }
 
-      // Seção de Notebook
       if (notebookComms.length > 0) {
         doc.setFontSize(16);
         doc.setTextColor(primaryColorRGB[0], primaryColorRGB[1], primaryColorRGB[2]);
@@ -148,7 +144,7 @@ export function PdfExportButton({
             c.commissionAmount.toFixed(2)
           ]),
           theme: 'striped',
-          headStyles: { fillColor: primaryColorRGB, textColor: [255, 255, 255] },
+          headStyles: { fillColor: primaryColorRGB as any, textColor: [255, 255, 255] },
           margin: { left: pageMargin, right: pageMargin },
         });
         yPos = (doc as any).lastAutoTable.finalY + 8;
@@ -161,7 +157,6 @@ export function PdfExportButton({
         yPos += 15;
       }
 
-      // Rodapé com Totais Gerais
       doc.setDrawColor(200);
       doc.line(pageMargin, yPos - 5, pageWidth - pageMargin, yPos - 5);
       yPos += 5;
@@ -193,7 +188,7 @@ export function PdfExportButton({
         })),
         startY: yPos,
         theme: 'striped',
-        headStyles: { fillColor: primaryColorRGB, textColor: [255, 255, 255] },
+        headStyles: { fillColor: primaryColorRGB as any, textColor: [255, 255, 255] },
         margin: { left: pageMargin, right: pageMargin },
       });
     }

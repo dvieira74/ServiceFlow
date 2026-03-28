@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Plus, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -46,10 +46,10 @@ export function AddNoteForm({ onNoteAdd, initialServiceId = '', suggestedText = 
       return;
     }
 
-    const authorName = 'Usuário do Sistema';
+    const authorName = 'Administrador'; // Styled as a more professional role
 
     const newNoteData: Omit<Annotation, 'id' | 'date'> = {
-      serviceId: serviceId,
+      serviceId: serviceId.toUpperCase(),
       text,
       author: authorName, 
       relatedTo: 'service',
@@ -59,36 +59,41 @@ export function AddNoteForm({ onNoteAdd, initialServiceId = '', suggestedText = 
   };
 
   return (
-    <Card className="shadow-lg h-full">
-      <CardHeader>
-        <CardTitle className="font-headline">Adicionar Nova Anotação</CardTitle>
+    <Card className="shadow-sm border-none bg-background/60 backdrop-blur-sm h-full overflow-hidden">
+      <CardHeader className="bg-primary/5 pb-4 border-b border-primary/10">
+        <CardTitle className="text-lg font-bold flex items-center gap-2">
+            <Plus className="h-4 w-4 text-primary" /> Nova Anotação
+        </CardTitle>
+        <CardDescription>Registre detalhes importantes do serviço.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="serviceId">ID do Serviço</Label>
+      <CardContent className="pt-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="serviceId" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">ID do Serviço</Label>
             <Input
               id="serviceId"
               value={serviceId}
               onChange={(e) => setServiceId(e.target.value)}
-              placeholder="Digite o ID do serviço (ex.: SR001)"
+              placeholder="Ex.: SR001"
               disabled={isSubmitting}
+              className="bg-muted/30 border-none focus-visible:ring-primary font-mono uppercase"
             />
           </div>
-          <div>
-            <Label htmlFor="text">Texto da Anotação</Label>
+          <div className="space-y-2">
+            <Label htmlFor="text" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Conteúdo da Anotação</Label>
             <Textarea
               id="text"
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="Digite sua anotação aqui..."
-              rows={4}
+              placeholder="O que aconteceu neste serviço? Detalhes técnicos, peças trocadas..."
+              rows={5}
               disabled={isSubmitting}
+              className="bg-muted/30 border-none focus-visible:ring-primary resize-none leading-relaxed"
             />
           </div>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" className="w-full shadow-md hover:shadow-lg transition-all" disabled={isSubmitting}>
             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-            {isSubmitting ? 'Adicionando...' : 'Adicionar Anotação'}
+            {isSubmitting ? 'Salvando...' : 'Registrar Agora'}
           </Button>
         </form>
       </CardContent>

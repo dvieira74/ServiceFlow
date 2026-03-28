@@ -1,19 +1,7 @@
 
-export type ServiceRequestStatus = 'Orçamento' | 'Andamento' | 'Pronto';
-
-export type ServiceRequest = {
-  id: string;
-  data: string; // ISO string format e.g. "2023-10-26T10:00:00.000Z"
-  cliente: string;
-  equipamento: string;
-  descricao: string;
-  status: ServiceRequestStatus;
-  observacao?: string;
-  numeroOS?: string;
-};
-
 // CommissionStatus pode ser simplificado ou usado de forma mais genérica
 export type CommissionStatus = 'Pending' | 'Paid' | 'Registered'; // Adicionando 'Registered' como exemplo
+
 export type ServiceType = 'printer' | 'toner' | 'notebook';
 
 export type ServiceCommission = {

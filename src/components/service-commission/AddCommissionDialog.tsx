@@ -214,15 +214,33 @@ export function AddCommissionDialog({ onCommissionAdd }: AddCommissionDialogProp
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceValue" className="text-right">Valor Serviço (R$)</Label>
-            <Input 
-                id="serviceValue" 
-                type="number" 
-                step="0.01" 
-                {...form.register("serviceValue")} 
-                className="col-span-3" 
-                placeholder="Ex: 150.00" 
-                disabled={watchedIsPending}
+            <Label htmlFor="serviceValue" className="text-right">Valor Serviço</Label>
+            <Controller
+              control={form.control}
+              name="serviceValue"
+              render={({ field }) => {
+                const displayValue = new Intl.NumberFormat('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                }).format(field.value || 0);
+
+                const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+                  const rawValue = e.target.value.replace(/\D/g, "");
+                  const numberValue = rawValue ? parseInt(rawValue, 10) / 100 : 0;
+                  field.onChange(numberValue);
+                };
+
+                return (
+                  <Input 
+                    id="serviceValue"
+                    type="text"
+                    value={displayValue}
+                    onChange={handleChange}
+                    className="col-span-3 font-mono font-bold text-primary"
+                    disabled={watchedIsPending}
+                  />
+                );
+              }}
             />
             {form.formState.errors.serviceValue && (
               <p className="col-span-4 text-right text-xs text-destructive">{form.formState.errors.serviceValue.message}</p>

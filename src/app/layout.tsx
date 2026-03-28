@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   icons: {
     apple: '/icons/icon-192x192.png',
   },
+};
+
+export const viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#F0F4F8' },
     { media: '(prefers-color-scheme: dark)', color: '#14191f' },

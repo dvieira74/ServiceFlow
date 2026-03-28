@@ -20,7 +20,6 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type {
-  ServiceRequest,
   ServiceCommission,
   Annotation,
   ServiceType,
@@ -34,12 +33,12 @@ const HistorySchema = z.object({
 });
 
 // #################################################################
-// FERRAMENTA: CONSULTAR DADOS (Ordens de Serviço, Comissões, Anotações)
+// FERRAMENTA: CONSULTAR DADOS (Comissões, Anotações)
 // #################################################################
 
 const listDataInputSchema = z.object({
   collectionName: z
-    .enum(['serviceRequests', 'serviceCommissions', 'annotations'])
+    .enum(['serviceCommissions', 'annotations'])
     .describe('O nome da coleção para consultar no Firestore.'),
   filter: z
     .string()
@@ -58,7 +57,7 @@ const listDataTool = ai.defineTool(
   {
     name: 'listData',
     description:
-      'Consulta e lista dados de Ordens de Serviço (serviceRequests), Comissões (serviceCommissions) ou Anotações (annotations) do Firestore. Use para responder perguntas sobre itens existentes.',
+      'Consulta e lista dados de Comissões (serviceCommissions) ou Anotações (annotations) do Firestore. Use para responder perguntas sobre itens existentes.',
     inputSchema: listDataInputSchema,
     outputSchema: z.string().describe('Um array JSON dos documentos encontrados.'),
   },
@@ -100,40 +99,6 @@ const listDataTool = ai.defineTool(
         return serializedData;
     });
     return JSON.stringify(data, null, 2);
-  }
-);
-
-// #################################################################
-// FERRAMENTA: CRIAR ORDEM DE SERVIÇO
-// #################################################################
-
-const createServiceRequestInputSchema = z.object({
-  cliente: z.string().describe('Nome do cliente.'),
-  equipamento: z.string().describe('Descrição do equipamento.'),
-  descricao: z.string().describe('Descrição do problema ou serviço solicitado.'),
-});
-
-const createServiceRequestTool = ai.defineTool(
-  {
-    name: 'createServiceRequest',
-    description: 'Cria uma nova Ordem de Serviço (OS).',
-    inputSchema: createServiceRequestInputSchema,
-    outputSchema: z.string().describe('O ID da nova Ordem de Serviço criada.'),
-  },
-  async (input) => {
-    const newServiceRequest: Omit<ServiceRequest, 'id'> = {
-      ...input,
-      data: new Date().toISOString(),
-      status: 'Orçamento',
-    };
-    const docRef = await addDoc(
-      collection(db, 'serviceRequests'),
-      {
-          ...newServiceRequest,
-          data: Timestamp.fromDate(new Date(newServiceRequest.data))
-      }
-    );
-    return docRef.id;
   }
 );
 
@@ -195,7 +160,7 @@ export const serviceAgentFlow = ai.defineFlow(
     outputSchema: z.string(),
   },
   async ({ query, history }) => {
-    const systemInstruction = `Você é um assistente de IA para o aplicativo ServiceFlow Control. Sua função é ajudar o usuário a gerenciar Ordens de Serviço (OS), comissões e anotações.
+    const systemInstruction = `Você é um assistente de IA para o aplicativo ServiceFlow Control. Sua função é ajudar o usuário a gerenciar comissões e anotações.
 
       - Use as ferramentas disponíveis para buscar dados ou criar novos registros.
       - Ao listar dados, formate a resposta de forma clara e concisa para o usuário. Use tabelas em formato markdown quando apropriado.
@@ -206,9 +171,14 @@ export const serviceAgentFlow = ai.defineFlow(
     const result = await ai.generate({
         model: 'googleai/gemini-pro',
         system: systemInstruction,
-        prompt: query,
-        history: history,
-        tools: [listDataTool, createServiceRequestTool, createServiceCommissionTool],
+        messages: [
+            ...(history ? history.map(h => ({
+                role: (h.role === 'assistant' ? 'model' : h.role) as 'user' | 'model',
+                content: h.content
+            })) : []),
+            { role: 'user', content: [{ text: query }] }
+        ],
+        tools: [listDataTool, createServiceCommissionTool],
         output: {
             format: 'text'
         }
